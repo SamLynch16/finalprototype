@@ -29,6 +29,26 @@ const router = (app) => {
   app.get('/getMyTweets', mid.requiresLogin, controllers.Tweet.getMyTweets);
   // Route to the home page (login page if the user is not logged in)
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+
+  // Create a comment on a tweet
+  app.post('/tweets/:tweetId/comments', mid.requiresLogin, controllers.Tweet.addComment);
+
+  // Get comments for a tweet
+  app.get('/tweets/:tweetId/comments', mid.requiresLogin, controllers.Tweet.getComments);
+
+  app.post('/like/:id', mid.requiresLogin, controllers.Tweet.likeTweet);
+  app.post('/unlike/:id', mid.requiresLogin, controllers.Tweet.unlikeTweet);
+
+  // Delete a comment
+  app.delete('/tweets/:tweetId/comments/:commentId', mid.requiresLogin, controllers.Tweet.deleteComment);
+
+  // **New Route**: Reply to a comment
+  app.post('/tweets/:tweetId/comments/:commentId/replies', mid.requiresLogin, controllers.Tweet.replyToComment);
+  // Delete a reply
+  app.delete('/tweets/:tweetId/comments/:commentId/replies/:replyId', mid.requiresLogin, controllers.Tweet.deleteReply);
+
+  app.put('/updateUsername', mid.requiresLogin, controllers.Account.updateUsername);
+  app.put('/updatePassword', mid.requiresLogin, controllers.Account.updatePassword);
 };
 
 module.exports = router;

@@ -9,24 +9,34 @@ const TweetSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    set: setContent, // Sanitizing the content
-    maxlength: 280, // Limit the tweet to 280 characters (like Twitter)
+    set: setContent,
+    maxlength: 280,
   },
   owner: {
     type: mongoose.Schema.ObjectId,
     required: true,
-    ref: 'Account', // This will link to the Account model (the user who posted the tweet)
+    ref: 'Account',
   },
+  likes: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  }],
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment',
+  }],
   createdAt: {
     type: Date,
-    default: Date.now, // Timestamp when the tweet was created
+    default: Date.now,
   },
 });
 
+// This controls what gets sent to the frontend
 TweetSchema.statics.toAPI = (doc) => ({
   content: doc.content,
   owner: doc.owner,
   timestamp: doc.createdAt,
+  // comments: doc.comments,  // optional: you could include comments here if needed
 });
 
 const TweetModel = mongoose.model('Tweet', TweetSchema);
